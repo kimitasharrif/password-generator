@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator and Checker</title>
+</head>
+
+<body>
+    <h1>Password Generator and Checker</h1>
+
+    <form id="passwordForm">
+        <label for="length">Enter password length (for generation):</label>
+        <input type="number" id="length" name="length">
+        <button type="button" onclick="generatePassword()">Generate Password</button>
+
+        <hr>
+
+        <label for="password">Enter your password (for checking):</label>
+        <input type="password" id="password" name="password">
+        <button type="button" onclick="checkPassword()">Check Password Strength</button>
+    </form>
+
+    <div id="result"></div>
+    <div id="strength"></div>
+
+    <script>
+        function generatePassword() {
+            var length = document.getElementById('length').value;
+
+            fetch('/generate_password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'length': length,
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('result').innerText = 'Generated Password: ' + data.password;
+                });
+        }
+
+        function checkPassword() {
+            var password = document.getElementById('password').value;
+
+            fetch('/check_strength', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'password': password,
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('strength').innerText = 'Password Strength: ' + data.strength;
+                });
+        }
+    </script>
+</body>
+
+</html>
